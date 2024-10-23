@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -55,7 +56,7 @@ ROOT_URLCONF = 'djangolol.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR.parent.parent, 'react-app', 'dist')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -127,3 +128,7 @@ CSRF_COOKIE_SAMESITE = 'Strict'
 CSRF_COOKIE_HTTPONLY = True
 SESSION_COOKIE_HTTPONLY = True
 SESSION_COOKIE_SAMESITE = 'Strict'
+
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR.parent.parent, 'react-app', 'dist'),
+]

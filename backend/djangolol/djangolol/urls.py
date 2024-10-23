@@ -16,9 +16,20 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.conf.urls.static import static
+import os
+from django.conf import settings
 from django.shortcuts import render
+
+def index(request):
+    return render(request, 'index.html')  # Just use 'index.html'
+
+
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/auth/', include('api.urls.auth_urls'))
-]
+    path('api/auth/', include('api.urls.auth_urls')),
+    path('', index, name='index'),
+] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+
