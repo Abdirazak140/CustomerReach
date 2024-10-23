@@ -4,6 +4,8 @@ from django.contrib.auth import authenticate, login, logout
 from django.http import JsonResponse
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.decorators.http import require_POST
+from django.contrib.auth import logout as django_logout
+from django.http import JsonResponse
 
 @require_POST
 def login(request):
@@ -21,12 +23,11 @@ def login(request):
     login(request, user)
     return JsonResponse({"details": "Logged in successfully"})
 
-def logout(request):
+def custom_logout(request):
     if not request.user.is_authenticated:
-        return JsonResponse({"details": "Not logged in!"}, status=400)
-    
-    logout(request)
-    return JsonResponse({"details": "Logged out successfully"})
+        return JsonResponse({"message": "User not authenticated"}, status=400)
+    django_logout(request)
+    return JsonResponse({"message": "Logged out successfully"})
 
 @ensure_csrf_cookie
 def session(request):
@@ -35,7 +36,7 @@ def session(request):
     
     return JsonResponse({"isauthenticated": True})
 
-def whoami(request):
+def custom_whoami(request):
     if not request.user.is_authenticated:
         return JsonResponse({"isauthenticated": False})
     

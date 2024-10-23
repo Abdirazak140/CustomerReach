@@ -22,14 +22,11 @@ from django.conf import settings
 from django.shortcuts import render
 
 def index(request):
-    return render(request, 'index.html')  # Just use 'index.html'
-
-
+    return render(request, 'index.html')
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/auth/', include('api.urls.auth_urls')),
     path('', index, name='index'),
-] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
-
+] + static(settings.STATIC_URL, document_root=os.path.join(settings.BASE_DIR.parent.parent, 'react-app', 'dist', 'assets'))

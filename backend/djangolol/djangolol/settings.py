@@ -130,5 +130,6 @@ SESSION_COOKIE_HTTPONLY = True
 SESSION_COOKIE_SAMESITE = 'Strict'
 
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR.parent.parent, 'react-app', 'dist'),
+    BASE_DIR.parent.parent.joinpath('react-app', 'dist', 'assets'),
 ]
+STATIC_URL = '/assets/'

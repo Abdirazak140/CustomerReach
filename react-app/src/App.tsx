@@ -29,34 +29,35 @@ class App extends Component<{}, AppState> {
 
   // Get Session Method
   getSession = () => {
-    fetch("/api/session/", {
-      credentials: "same-origin",
-    })
+      fetch("/api/auth/session/", {
+          credentials: "same-origin",
+      })
       .then((res) => res.json())
       .then((data) => {
-        console.log(data);
-        this.setState({ isAuthenticated: data.isAuthenticated });
+          console.log(data);
+          this.setState({ isAuthenticated: data.isauthenticated });
       })
       .catch((err) => {
-        console.log(err);
+          console.log(err);
       });
   };
 
   //Who Am I method
   whoami = () => {
-    fetch("/api/whoami/", {
-      headers: {
-        "Content-Type": "application/json",
-      },
-      credentials: "same-origin",
+    fetch("/api/auth/whoami/", {
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": cookies.get("csrftoken"), // Ensure CSRF token is included
+        },
+        credentials: "same-origin",
     })
-      .then((res) => res.json())
-      .then((data) => {
+    .then((res) => res.json())
+    .then((data) => {
         console.log("You are logged in as: " + data.username);
-      })
-      .catch((err) => {
+    })
+    .catch((err) => {
         console.log(err);
-      });
+    });
   };
 
   handlePasswordChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -76,48 +77,56 @@ class App extends Component<{}, AppState> {
   };
 
   login = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    fetch("/api/login/", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "X-CSRFToken": cookies.get("csrftoken"),
-      },
-      credentials: "same-origin",
-      body: JSON.stringify({
-        username: this.state.username,
-        password: this.state.password,
-      }),
-    })
+      event.preventDefault();
+      const csrfToken = cookies.get("csrftoken"); // Get CSRF token
+
+      fetch("/api/auth/login/", {
+          method: "POST",
+          headers: {
+              "Content-Type": "application/json",
+              "X-CSRFToken": csrfToken, // Use the retrieved CSRF token
+          },
+          credentials: "same-origin",
+          body: JSON.stringify({
+              username: this.state.username,
+              password: this.state.password,
+          }),
+      })
       .then(this.isResponseOk)
       .then((data) => {
-        console.log(data);
-        this.setState({
-          isAuthenticated: true,
-          username: "",
-          password: "",
-          error: "",
-        });
+          console.log(data);
+          this.setState({
+              isAuthenticated: true,
+              username: "",
+              password: "",
+              error: "",
+          });
       })
       .catch((err) => {
-        console.log(err);
-        this.setState({ error: "Wrong username or password." });
+          console.log(err);
+          this.setState({ error: "Wrong username or password." });
       });
   };
 
   //Logout Method
   logout = () => {
-    fetch("/api/logout", {
-      credentials: "same-origin",
+    const csrfToken = cookies.get("csrftoken"); // Get CSRF token
+
+    fetch("/api/auth/logout/", {
+        method: "POST", // Ensure you use POST for logout if your backend requires it
+        headers: {
+            "X-CSRFToken": csrfToken, // Include CSRF token
+        },
+        credentials: "same-origin",
     })
-      .then(this.isResponseOk)
-      .then((data) => {
+    .then(this.isResponseOk)
+    .then((data) => {
         console.log(data);
         this.setState({ isAuthenticated: false });
-      })
-      .catch((err) => {
+    })
+    .catch((err) => {
         console.log(err);
-      });
+    });
   };
 
   render() {
