@@ -6,21 +6,25 @@ from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.decorators.http import require_POST
 from django.contrib.auth import logout as django_logout
 from django.http import JsonResponse
+from django.contrib.auth import login as django_login
+
+
 
 @require_POST
-def login(request):
+def login_view(request):  # Change the function name here
     data = json.loads(request.body)
     username = data.get("username")
     password = data.get("password")
 
     if username is None or password is None:
         return JsonResponse({"detail": "Provide a username and password please!"})
-    
+
     user = authenticate(username=username, password=password)
     if user is None:
         return JsonResponse({"detail": "Invalid credentials!"}, status=400)
-    
-    login(request, user)
+
+    django_login(request, user)
+
     return JsonResponse({"details": "Logged in successfully"})
 
 def custom_logout(request):
@@ -30,10 +34,10 @@ def custom_logout(request):
     return JsonResponse({"message": "Logged out successfully"})
 
 @ensure_csrf_cookie
-def session(request):
+def session_view(request):  # Change the function name here
     if not request.user.is_authenticated:
         return JsonResponse({"isauthenticated": False})
-    
+
     return JsonResponse({"isauthenticated": True})
 
 def custom_whoami(request):

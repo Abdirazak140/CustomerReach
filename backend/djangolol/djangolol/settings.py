@@ -38,7 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'api.apps.ApiConfig'
+    'api.apps.ApiConfig',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
@@ -125,8 +126,8 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CSRF_COOKIE_SAMESITE = 'Strict'
-CSRF_COOKIE_HTTPONLY = True
-SESSION_COOKIE_HTTPONLY = True
+CSRF_COOKIE_HTTPONLY = False
+SESSION_COOKIE_HTTPONLY = False
 SESSION_COOKIE_SAMESITE = 'Strict'
 
 STATICFILES_DIRS = [

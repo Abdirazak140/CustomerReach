@@ -4,6 +4,8 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 const cookies = new Cookies();
 
+console.log("CSRF Token:", cookies.get("csrftoken"));
+
 interface AppState {
   username: string;
   password: string;
@@ -42,23 +44,24 @@ class App extends Component<{}, AppState> {
       });
   };
 
+
   //Who Am I method
-  whoami = () => {
-    fetch("/api/auth/whoami/", {
-        headers: {
-            "Content-Type": "application/json",
-            "X-CSRFToken": cookies.get("csrftoken"), // Ensure CSRF token is included
-        },
-        credentials: "same-origin",
-    })
-    .then((res) => res.json())
-    .then((data) => {
-        console.log("You are logged in as: " + data.username);
-    })
-    .catch((err) => {
-        console.log(err);
-    });
+    whoami = () => {
+      fetch("/api/auth/whoami/", {
+          headers: {
+              "Content-Type": "application/json",
+          },
+          credentials: "same-origin",
+      })
+      .then((res) => res.json())
+      .then((data) => {
+          console.log("You are logged in as: " + data.username);
+      })
+      .catch((err) => {
+          console.log(err);
+      });
   };
+
 
   handlePasswordChange = (event: ChangeEvent<HTMLInputElement>) => {
     this.setState({ password: event.target.value });
@@ -78,13 +81,11 @@ class App extends Component<{}, AppState> {
 
   login = (event: FormEvent<HTMLFormElement>) => {
       event.preventDefault();
-      const csrfToken = cookies.get("csrftoken"); // Get CSRF token
-
       fetch("/api/auth/login/", {
           method: "POST",
           headers: {
               "Content-Type": "application/json",
-              "X-CSRFToken": csrfToken, // Use the retrieved CSRF token
+              "X-CSRFToken": cookies.get("csrftoken"),
           },
           credentials: "same-origin",
           body: JSON.stringify({
@@ -108,26 +109,22 @@ class App extends Component<{}, AppState> {
       });
   };
 
-  //Logout Method
-  logout = () => {
-    const csrfToken = cookies.get("csrftoken"); // Get CSRF token
 
-    fetch("/api/auth/logout/", {
-        method: "POST", // Ensure you use POST for logout if your backend requires it
-        headers: {
-            "X-CSRFToken": csrfToken, // Include CSRF token
-        },
-        credentials: "same-origin",
-    })
-    .then(this.isResponseOk)
-    .then((data) => {
-        console.log(data);
-        this.setState({ isAuthenticated: false });
-    })
-    .catch((err) => {
-        console.log(err);
-    });
+  //Logout Method
+    logout = () => {
+      fetch("/api/auth/logout/", {
+          credentials: "same-origin",
+      })
+      .then(this.isResponseOk)
+      .then((data) => {
+          console.log(data);
+          this.setState({ isAuthenticated: false });
+      })
+      .catch((err) => {
+          console.log(err);
+      });
   };
+
 
   render() {
     if (!this.state.isAuthenticated) {
