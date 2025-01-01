@@ -27,9 +27,6 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-RABBITMQ_HOST = "localhost"
-RABBITMQ_PORT = 5672
-
 # Application definition
 
 INSTALLED_APPS = [
