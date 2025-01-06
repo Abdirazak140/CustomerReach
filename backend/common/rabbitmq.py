@@ -1,4 +1,5 @@
 import json
+import uuid
 import pika
 
 def start_connection():
@@ -57,3 +58,12 @@ def on_response(correlation_id):
 def reply(channel, properties, response):
     channel.queue_declare(queue=properties.reply_to)
     channel.basic_publish(exchange='', routing_key=properties.reply_to, body=json.dumps(response), properties=pika.BasicProperties(correlation_id = properties.correlation_id))
+    
+def request_service_with_response(query_name, payload):
+    correlation_id = str(uuid.uuid1())
+    
+    publish_message(query_name, payload, correlation_id, True)
+    
+    response = on_response(correlation_id)
+    
+    return response
