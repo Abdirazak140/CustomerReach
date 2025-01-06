@@ -6,7 +6,7 @@ DBService for example:
 cd path/to/project
 source venv/bin/activate
 cd backend/
-python3 ./DBService/manage.py runserver
+python3 ./DBService/main.py
 ```
 ## Run rabbitmq locally:
 
