@@ -5,7 +5,7 @@ from uuid import UUID, uuid4
 from datetime import datetime
 from enum import Enum
 
-router = APIRouter(prefix="/app/items")
+router = APIRouter(prefix="/api/items")
 
 class ItemType(str, Enum):
     PRODUCT = "product"

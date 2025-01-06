@@ -1,7 +1,14 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from backend.UserService.routers import items
+from routers import items, user
 import uvicorn
+import os
+import sys
+
+ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "../"))
+sys.path.append(ROOT_DIR)
+
+from common.jwt_middleware import JWTMiddleware
 
 app = FastAPI()
 
@@ -13,7 +20,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+app.add_middleware(JWTMiddleware)
+
 app.include_router(items.router)
+app.include_router(user.router)
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)
